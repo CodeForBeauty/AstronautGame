@@ -1,0 +1,14 @@
+add_library (audio STATIC 
+						"include/AudioSystem.h" "src/AudioSystem.cpp" 
+						"include/AudioSource.h" "src/AudioSource.cpp")
+
+target_include_directories (audio PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+set (LIBTYPE "STATIC")
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/openal ${CMAKE_CURRENT_BINARY_DIR}/openal)
+target_link_libraries (audio OpenAL)
+
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/libsndfile ${CMAKE_CURRENT_BINARY_DIR}/libsndfile)
+target_link_libraries (audio sndfile)
+
+target_link_libraries (audio deps)
