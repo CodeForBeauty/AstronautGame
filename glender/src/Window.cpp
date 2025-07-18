@@ -3,6 +3,7 @@
 #include "Logging.h"
 
 #include <iostream>
+#include <string>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -14,7 +15,7 @@ using namespace std;
 
 Window::Window(const int2 size, const string& name) : m_windowSize(size), m_windowName(name), m_glWindow(nullptr) {
 	if (size.x <= 0 || size.y <= 0) {
-		GlenderLog(LogTypeError, format("Window size is incorrect. Values width: {}, height: {}. "
+		GlenderLog(LogTypeError, std::format("Window size is incorrect. Values width: {}, height: {}. "
 			"Values must satisfy: width > 0 && height > 0.", size.x, size.y));
 	}
 }
@@ -46,6 +47,7 @@ void Window::InitWindow() {
 	glfwGetCursorPos(m_glWindow, &xPos, &yPos);
 	m_lastMousePos = { (float)xPos, (float)yPos };
 
+#ifndef NDEBUG
 	// Init IMGUI
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -58,6 +60,7 @@ void Window::InitWindow() {
 	ImGui_ImplGlfw_InitForOpenGL(m_glWindow, true);
 
 	ImGui_ImplOpenGL3_Init("#version 150");
+#endif
 }
 
 int2 Window::GetWindowSize() const {
@@ -77,8 +80,6 @@ void Window::SetWindowSize(const int2 size) {
 
 void Window::ResizeViewport() const {
 	glViewport(0, 0, m_windowSize.x, m_windowSize.y);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void Window::PostRender() {

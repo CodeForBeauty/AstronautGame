@@ -131,6 +131,12 @@ void Framebuffer::BindTextures(int offset) const {
 	}
 }
 
+void glender::Framebuffer::UnbindTextures() {
+	for (int i = 0; i < m_textures.size(); i++) {
+		m_textures[i]->Unbind();
+	}
+}
+
 int2 Framebuffer::GetSize() const {
 	return m_resolution;
 }
@@ -156,6 +162,8 @@ void Framebuffer::UpdateAttachments() {
 
 	auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	switch (fboStatus) {
+	case GL_FRAMEBUFFER_COMPLETE:
+		break;
 	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 		GlenderLog(LogTypeError, "Framebuffer status: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
 		break;
@@ -165,6 +173,8 @@ void Framebuffer::UpdateAttachments() {
 	case GL_FRAMEBUFFER_UNSUPPORTED:
 		GlenderLog(LogTypeError, "Framebuffer status: GL_FRAMEBUFFER_UNSUPPORTED");
 		break;
+	default:
+		GlenderLog(LogTypeError, std::format("Framebuffer status: {}", fboStatus));
 	}
 
 	Unbind();

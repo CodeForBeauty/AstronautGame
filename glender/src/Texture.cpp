@@ -19,6 +19,7 @@ using namespace std;
 
 Texture::Texture(const int2 resolution, const TextureType type, const TextureDataType dataType, 
 		const TextureUse use, const TextureBitSize bitSize) :
+		m_textureID(0),
 		m_resolution(resolution), m_use(use), m_type(type), m_dataType(dataType), m_bitSize(bitSize),
 		m_wrapType(TextureWrapClamp), m_minFilter(TextureMinFilterLinear), m_magFilter(TextureMagFilterLinear), m_channels(4) {
 

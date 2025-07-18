@@ -24,12 +24,16 @@ Material::~Material() {
 	glDeleteProgram(m_shaderProgram);
 }
 
-void Material::Bind() {
+void glender::Material::BindMaterial() {
 	if (m_shaderProgram == GL_NONE) {
 		GlenderLog(LogTypeError, "Material unitialized.");
 		return;
 	}
 	glUseProgram(m_shaderProgram);
+}
+
+void Material::Bind() {
+	BindMaterial();
 
 	for (pair<const TextureSlot, shared_ptr<Texture>>& texture : m_textures) {
 		texture.second->Bind(texture.first);
@@ -63,92 +67,92 @@ void Material::LoadShaders(const vector<filesystem::path>& shaderPaths) {
 }
 
 bool Material::SetUniform(const char* name, const int value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniform1i(glGetUniformLocation(m_shaderProgram, name), value);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::SetUniform(const char* name, const float value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniform1f(glGetUniformLocation(m_shaderProgram, name), value);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::SetUniform(const char* name, const bool value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniform1i(glGetUniformLocation(m_shaderProgram, name), value);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::SetUniform(const char* name, lm::mat2 value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniformMatrix2fv(glGetUniformLocation(m_shaderProgram, name), 1, GL_FALSE, value);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::SetUniform(const char* name, lm::mat3 value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniformMatrix3fv(glGetUniformLocation(m_shaderProgram, name), 1, GL_FALSE, value);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::SetUniform(const char* name, lm::mat4 value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, name), 1, GL_FALSE, value);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::SetUniform(const char* name, lm::vec2 value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniform2fv(glGetUniformLocation(m_shaderProgram, name), 1, &value.x);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::SetUniform(const char* name, lm::vec3 value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniform3fv(glGetUniformLocation(m_shaderProgram, name), 1, &value.x);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::SetUniform(const char* name, lm::vec4 value) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformLocation(m_shaderProgram, name) == -1)
 		return false;
 	glUniform4fv(glGetUniformLocation(m_shaderProgram, name), 1, &value.x);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 
 bool Material::UniformBlockBinding(const char* name, const int index) {
-	Bind();
+	BindMaterial();
 	if (glGetUniformBlockIndex(m_shaderProgram, name) == -1)
 		return false;
 	glUniformBlockBinding(m_shaderProgram, glGetUniformBlockIndex(m_shaderProgram, name), index);
-	Unbind();
+	glUseProgram(GL_NONE);
 	return true;
 }
 

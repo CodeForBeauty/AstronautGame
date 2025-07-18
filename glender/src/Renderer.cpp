@@ -3,6 +3,8 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#include "Logging.h"
+
 using namespace glender;
 using namespace std;
 
@@ -125,6 +127,7 @@ Renderer::Renderer(Scene* linkedScene) :
 		m_lightingBuffer.Resize(size);
 	});
 
+	m_renderedData.Bind();
 	int2 viewSize = linkedScene->SceneCamera.GetResolution();
 	shared_ptr<Texture> gBuffer = nullptr;
 	m_gBuffer[GBufferPosition] = m_renderedData.AddTexture(TextureDataFloat); // Position
@@ -140,6 +143,7 @@ Renderer::Renderer(Scene* linkedScene) :
 	m_gTexIndex[GBufferSMRA] = 3;
 	m_gTexIndex[GBufferIndex] = 4;
 
+	m_lightingBuffer.Bind();
 	m_lightingBuffer.AddTexture(m_sceneDepth);
 
 	m_lightingRender = m_lightingBuffer.AddTexture(TextureDataUByte);
@@ -227,13 +231,19 @@ void Renderer::Render() {
 	UpdateLightsBlock();
 	m_shadingRendering.RenderMesh();
 
+	m_renderedData.UnbindTextures();
+	m_renderedShadows.UnbindTextures();
+
+	m_irradianceDiff->Unbind();
+	m_irradianceSpec->Unbind();
+	m_envBrdf->Unbind();
+
 	glEnable(GL_DEPTH_TEST);
-	m_skybox.Bind(0);
-	//m_irradianceDiff->Bind(0);
-	//m_irradianceSpec->Bind(0);
 	m_skyboxMaterial->Bind();
+	m_skybox.Bind(0);
 	m_skyboxMesh.Draw();
 
+	m_skybox.Unbind();
 	m_lightingBuffer.Unbind();
 
 	// Post processing

@@ -33,6 +33,7 @@ namespace glender {
 		void BlitFrom(Framebuffer& from);
 
 		void BindTextures(const int offset = 0) const;
+		void UnbindTextures();
 
 		int2 GetSize() const;
 		void Resize(const int2& resolution);

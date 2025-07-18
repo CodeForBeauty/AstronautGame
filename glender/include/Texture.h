@@ -95,7 +95,7 @@ namespace glender {
 		void ReadPixel(unsigned int x, unsigned int y, void* data);
 
 	protected:
-		unsigned int m_textureID;
+		GLuint m_textureID;
 
 		int2 m_resolution;
 		int m_channels;

@@ -43,9 +43,10 @@ public:
 	// Player spawn data
 	shared_ptr<ColliderBox> Player = nullptr;
 	shared_ptr<ColliderBox> PlayerHead = nullptr;
-	float PlayerMoveSpeed = 5.0f;
+	shared_ptr<ColliderBox> PlayerFeet = nullptr;
+	float PlayerMoveSpeed = 8.0f;
 	float PlayerJumpForce = 10.0f;
-	float PlayerCameraSpeed = 5.0f;
+	float PlayerCameraSpeed = 4.0f;
 	vec3 PlayerSize = { 1, 1.5f, 1 };
 	vec3 PlayerStart = { 0, 20, 0 };
 	bool PlayerCanJump = false;
@@ -54,11 +55,11 @@ public:
 
 	MyApp() : App({ 1920, 1080 }) {
 		// Making game full screen
-		m_scene->SceneCamera.SetAutoResize(true);
+		m_scene->SceneCamera.SetAutoResize(false);
 		m_window->SetWindowMode(WindowedFullScreenMode);
 
 		// Creating collider for player body
-		Player = Physics.AddBody<ColliderBox>(25, PlayerSize, PlayerStart);
+		Player = Physics.AddBody<ColliderBox>(100, PlayerSize, PlayerStart);
 		Player->SetCanRotate(false);
 		Player->SetBounciness(0);
 
@@ -68,14 +69,17 @@ public:
 		PlayerHead->SetColliding(false);
 		PlayerHead->SetLocalPos({ 0, 1.8f, 0 });
 		PlayerHead->SetParent(Player.get());
+
+		PlayerFeet = Physics.AddBody<ColliderBox>(1, vec3{ 0.1f, 0.05f, 0.1f });
+		PlayerFeet->SetSimulated(false);
+		PlayerFeet->SetLocalPos({ 0, -1.65f, 0 });
+		PlayerFeet->SetParent(Player.get());
 	}
 
 	void Start() override {
 		// Adding player controls
-		Player->OnCollision.AddListener(CollisionOverlap, [this](CollisionData data) {
-			if (dot(data.Normal, UpVector) > 0) {
-				PlayerCanJump = true;
-			}
+		PlayerFeet->OnCollision.AddListener(CollisionOverlap, [this](CollisionData data) {
+			PlayerCanJump = true;
 			});
 
 		m_window->OnKeyboard.AddListener(KeyW, [this](InputEventType type, InputEventModifiers mods) {
@@ -107,7 +111,7 @@ public:
 			m_scene->SceneCamera.SetPosition(pos);
 			});
 
-		// Degining main scene light
+		// Spawning main scene light
 		MainLight = m_scene->SpawnLight<DirectLight>(vec4{ 1.0f, 1.0f, 1.0f, 1.0f }, 5.0f,
 			vec3{ 0.0f, 10.0f, 0.0f }, vec3{ 25.0f, 0.0f, 0.0f }, int2{1024, 1024});
 

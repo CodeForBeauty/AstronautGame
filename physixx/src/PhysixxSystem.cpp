@@ -2,7 +2,7 @@
 
 using namespace physixx;
 
-PhysixxSystem::PhysixxSystem() : m_bodies(), m_toRemove(), Gravity(0, -9.81f, 0), m_simSteps(4) {
+PhysixxSystem::PhysixxSystem() : m_bodies(), m_toRemove(), Gravity(0, -9.81f, 0), m_simSteps(16) {
 
 }
 

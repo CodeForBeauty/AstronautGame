@@ -41,6 +41,7 @@ namespace glender {
 		Material() : m_shaderProgram(NULL), Type(MaterialTypeNone), m_alphaMethod(AlphaNone) {};
 		~Material();
 
+		void BindMaterial();
 		void Bind();
 		void Unbind();
 

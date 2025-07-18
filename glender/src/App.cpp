@@ -38,6 +38,10 @@ App::~App() {
 void App::StartApp() {
 	float currentTime = 0;
 	GLENDER_APP_TRY
+	GLenum error1 = glGetError();
+	if (error1) {
+		GlenderLog(LogTypeError, std::format("OpenGL error: {}", error1));
+	}
 	Start();
 	m_previousTime = glfwGetTime();
 	GLENDER_APP_CATCH
@@ -45,9 +49,11 @@ void App::StartApp() {
 		GLENDER_APP_TRY
 		currentTime = glfwGetTime();
 
+#ifndef NDEBUG
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+#endif
 
 		Delta = currentTime - m_previousTime;
 		Tick();
@@ -55,8 +61,10 @@ void App::StartApp() {
 
 		m_previousTime = currentTime;
 
+#ifndef NDEBUG
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
 
 		m_window->PostRender();
 
@@ -64,7 +72,7 @@ void App::StartApp() {
 
 		GLenum error = glGetError();
 		if (error) {
-			cout << error << endl;
+			GlenderLog(LogTypeError, std::format("OpenGL error: {}", error));
 		}
 		GLENDER_APP_CATCH
 	}
